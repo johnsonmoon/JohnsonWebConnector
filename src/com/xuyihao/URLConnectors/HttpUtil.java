@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -46,8 +49,50 @@ public class HttpUtil {
 	}
 	
 	/**
-	 * 
+	 * @author johnson
+	 * @method getTest
+	 * @description 测试发送get请求的方法
 	 * */
+	public void getTest(){
+		
+	}
+	
+	/**
+	 * @author johnson
+	 * @method 
+	 * @description 执行发送get请求的方法	
+	 * */
+	public void executeGet(String actionURL, HashMap<String, String> parameters){
+		try{
+			URL url = new URL(actionURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			Set<String> mapKey = parameters.keySet();
+			for(String key : mapKey){
+				connection.setRequestProperty(key, parameters.get(key));
+			}
+			
+			try{
+	        	//获取URL的响应
+	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+	        	String s = "";
+	        	while((s = reader.readLine()) != null){
+	        		s += ("\n" + s);
+	        	}
+	            System.out.println(s);
+	          
+	            reader.close();
+	            	            
+	        }catch(IOException e){
+	        	e.printStackTrace();
+	        	System.out.println("No response get!!!");
+	        }
+			
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("Request failed!");
+		}
+	}
 	
 	/**
 	 * @method singleFileUpload 模拟提交表单数据上传单个文件的方法
