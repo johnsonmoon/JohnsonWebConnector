@@ -21,8 +21,23 @@ public class JohnsonMain {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		HttpUtil httpUtil = new HttpUtil(Platform.LINUX);
+		HttpUtil httpUtil = new HttpUtil(Platform.WINDOWS);
 		
+		
+		while(true){
+			String action = "";
+			try{
+				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+				action = br.readLine();
+							
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+			httpUtil.getTest("http://115.28.192.61:8088/EBwebTest/Accounts?action=" + action);
+		}
+		
+		
+		/*
 		HashMap<String, String> map = new HashMap();
 		String key = "";
 		String value = "";
@@ -43,9 +58,10 @@ public class JohnsonMain {
 		}
 		
 		httpUtil.executeGet("http://115.28.192.61:8088/EBwebTest/Accounts", map);
+		*/
+		
 		
 		/*
-		
 		String fileName = "";
 		try{
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -53,7 +69,7 @@ public class JohnsonMain {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.singleFileUpload(fileName, "http://115.28.192.61:8088/EBwebTest/IPContentTest", FileType.Text_TXT);
+		httpUtil.singleFileUpload(fileName, "http://127.0.0.1:8080/EBwebTest/Upload", FileType.Audio_MP3);
 		*/
 		
 		/*
@@ -67,7 +83,7 @@ public class JohnsonMain {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.multipleFileUpload(fileNames, "http://115.28.192.61:8088/EBwebTest/IPContentTest", FileType.Text_TXT);
+		httpUtil.multipleFileUpload(fileNames, "http://127.0.0.1:8080/EBwebTest/Upload", FileType.Text_TXT);
 		*/
 	}
 

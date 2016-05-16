@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 
@@ -53,8 +52,33 @@ public class HttpUtil {
 	 * @method getTest
 	 * @description 测试发送get请求的方法
 	 * */
-	public void getTest(){
-		
+	public void getTest(String actionURL){
+		try{
+			URL url = new URL(actionURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			
+			try{
+	        	//获取URL的响应
+	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+	        	String s = "";
+	        	String temp = "";
+	        	while((temp = reader.readLine()) != null){
+	        		s += ("\n" + temp);
+	        	}
+	            System.out.println(s);
+	          
+	            reader.close();
+	            	            
+	        }catch(IOException e){
+	        	e.printStackTrace();
+	        	System.out.println("No response get!!!");
+	        }
+			
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("Request failed!");
+		}
 	}
 	
 	/**
@@ -76,8 +100,9 @@ public class HttpUtil {
 	        	//获取URL的响应
 	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
 	        	String s = "";
-	        	while((s = reader.readLine()) != null){
-	        		s += ("\n" + s);
+	        	String temp = "";
+	        	while((temp = reader.readLine()) != null){
+	        		s += ("\n" + temp);
 	        	}
 	            System.out.println(s);
 	          
@@ -101,9 +126,10 @@ public class HttpUtil {
 	 * @param uploadFile 上传文件的路径字符串
 	 * @param actionURL 上传文件的URL
 	 * @param fileType 文件类型(枚举类型)
+	 * @attention 上传文件name为file
 	 * */
 	public void singleFileUpload(String uploadFile, String actionURL, FileType fileType){
-		String end = "\n";
+		String end = "\r\n";
 		String twoHyphens = "--";
         String boundary = "---------------------------7e0dd540448";
         try{
@@ -123,7 +149,10 @@ public class HttpUtil {
             String fileName = uploadFile.substring(uploadFile.lastIndexOf(this.PathSeparator) + 1);
         	//开始写表单格式内容
             ds.writeBytes(twoHyphens + boundary + end);
-        	ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\"; " + "filename=\"" + fileName + "\"" + end);
+        	ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\"; " + "filename=\"");
+        	//防止中文乱码
+        	ds.write(fileName.getBytes());
+        	ds.writeBytes("\"" + end);
         	ds.writeBytes(fileType.getValue() + end);
         	ds.writeBytes(end);
         	//根据路径读取文件
@@ -137,13 +166,16 @@ public class HttpUtil {
         	fis.close();
         	
         	ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
+        	ds.writeBytes(end);
+        	ds.flush();
 	        
 	        try{
 	        	//获取URL的响应
 	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
 	        	String s = "";
-	        	while((s = reader.readLine()) != null){
-	        		s += ("\n" + s);
+	        	String temp = "";
+	        	while((temp = reader.readLine()) != null){
+	        		s += ("\n" + temp);
 	        	}
 	            System.out.println(s);
 	          
@@ -170,9 +202,10 @@ public class HttpUtil {
      * @param uploadFiles 上传文件的路径字符串数组,表示多个文件
      * @param actionURL 上传文件的URL地址包括URL
      * @param fileType 文件类型(枚举类型)
+     * @attention 上传文件name为file0,file1,file2,以此类推
      * */
     public void multipleFileUpload(String[] uploadFiles, String actionURL, FileType fileType){
-        String end = "\n";
+        String end = "\r\n";
         String twoHyphens = "--";
         String boundary = "---------------------------7e0dd540448";
         try{
@@ -194,7 +227,10 @@ public class HttpUtil {
             	String uploadFile = uploadFiles[i];
             	String fileName = uploadFile.substring(uploadFile.lastIndexOf(this.PathSeparator) + 1);
             	ds.writeBytes(twoHyphens + boundary + end);
-            	ds.writeBytes("Content-Disposition: form-data; " + "name=\"file"+i+"\"; " + "filename=\"" + fileName + "\"" + end);
+            	ds.writeBytes("Content-Disposition: form-data; " + "name=\"file"+i+"\"; " + "filename=\"");
+            	//防止中文乱码
+            	ds.write(fileName.getBytes());
+            	ds.writeBytes("\"" + end);            	
             	ds.writeBytes(fileType.getValue() + end);
             	ds.writeBytes(end);
             	
@@ -208,14 +244,16 @@ public class HttpUtil {
             	fis.close();
             }
             ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
+        	ds.writeBytes(end);
             ds.flush();          
             
             try{
             	//获取URL的响应
             	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
             	String s = "";
-            	while((s = reader.readLine()) != null){
-            		s += ("\n" + s);
+            	String temp = "";
+            	while((temp = reader.readLine()) != null){
+            		s += temp;
             	}
                 System.out.println(s);
               
