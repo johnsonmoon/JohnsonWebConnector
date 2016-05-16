@@ -20,7 +20,7 @@ public class JohnsonMain {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		HttpUtil httpUtil = new HttpUtil(Platform.LINUX);
+		HttpUtil httpUtil = new HttpUtil(Platform.WINDOWS);
 		
 		String fileName = "";
 		try{

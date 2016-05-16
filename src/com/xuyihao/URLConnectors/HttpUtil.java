@@ -46,6 +46,10 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 
+	 * */
+	
+	/**
 	 * @method singleFileUpload 模拟提交表单数据上传单个文件的方法
 	 * @author johnson
 	 * @description 用来向指定url上传文件的方法
@@ -56,35 +60,28 @@ public class HttpUtil {
 	public void singleFileUpload(String uploadFile, String actionURL, FileType fileType){
 		String end = "\n";
 		String twoHyphens = "--";
-        String boundary = "-------------------HKUGADG524564adgyuyJohnson56484";
+        String boundary = "---------------------------7e0dd540448";
         try{
         	URL url = new URL(actionURL);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            //发送post请求需要你下面两行
+            //发送post请求需要下面两行
             connection.setDoInput(true);
             connection.setDoOutput(true);
             //设置请求参数
             connection.setUseCaches(false);
             connection.setRequestMethod("POST");
-            
-            //my adds
-            
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compadible; MSIE 6.0; Windows NT 5.1; SV1)");
-            
-            //my adds
-            
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Charset", "UTF-8");
-            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
-            
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            //获取请求内容输出流                        
             DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
             String fileName = uploadFile.substring(uploadFile.lastIndexOf(this.PathSeparator) + 1);
-        	ds.writeBytes(twoHyphens + boundary + end);
+        	//开始写表单格式内容
+            ds.writeBytes(twoHyphens + boundary + end);
         	ds.writeBytes("Content-Disposition: form-data; " + "name=\"file\"; " + "filename=\"" + fileName + "\"" + end);
         	ds.writeBytes(fileType.getValue() + end);
         	ds.writeBytes(end);
-        	
+        	//根据路径读取文件
         	FileInputStream fis = new FileInputStream(uploadFile);
         	byte[] buffer = new byte[1024];
         	int length = -1;
@@ -95,9 +92,6 @@ public class HttpUtil {
         	fis.close();
         	
         	ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-	        ds.flush();
-	        
-	        ds.close();
 	        
 	        try{
 	        	//获取URL的响应
@@ -109,11 +103,16 @@ public class HttpUtil {
 	            System.out.println(s);
 	          
 	            reader.close();
-	            
+	            	            
 	        }catch(IOException e){
 	        	e.printStackTrace();
 	        	System.out.println("No response get!!!");
 	        }
+	        
+	        
+	        ds.close();
+
+	        
         }catch(IOException e){
         	e.printStackTrace();
         	System.out.println("Request failed!");
@@ -130,11 +129,11 @@ public class HttpUtil {
     public void multipleFileUpload(String[] uploadFiles, String actionURL, FileType fileType){
         String end = "\n";
         String twoHyphens = "--";
-        String boundary = "-------------------HKUGADG524564adgyuyJohnson56484";
+        String boundary = "---------------------------7e0dd540448";
         try{
             URL url = new URL(actionURL);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            //发送post请求需要你下面两行
+            //发送post请求需要下面两行
             connection.setDoInput(true);
             connection.setDoOutput(true);
             //设置请求参数
@@ -142,7 +141,8 @@ public class HttpUtil {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Charset", "UTF-8");
-            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            //获取请求内容输出流  
             DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
             //添加post数据
             for(int i=0; i < uploadFiles.length; i++){
@@ -163,9 +163,7 @@ public class HttpUtil {
             	fis.close();
             }
             ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-            ds.flush();
-            
-            ds.close();
+            ds.flush();          
             
             try{
             	//获取URL的响应
@@ -182,6 +180,9 @@ public class HttpUtil {
             	e.printStackTrace();
             	System.out.println("No response get!!!");
             }
+            
+            ds.close();
+
             
         }catch (IOException e){
             e.printStackTrace();
