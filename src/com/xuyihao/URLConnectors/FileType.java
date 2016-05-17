@@ -26,7 +26,6 @@ public enum FileType {
 	Package_RAR("Content-Type: application/octet-stream"),
 	Image_GIF("Content-Type: image/gif");
 	
-	
 	private final String value;
 	
 	private FileType(String v){
@@ -36,5 +35,4 @@ public enum FileType {
 	public String getValue(){
 		return this.value;
 	}
-	
 }

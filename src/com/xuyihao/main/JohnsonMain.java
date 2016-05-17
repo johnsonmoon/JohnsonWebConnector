@@ -21,24 +21,50 @@ public class JohnsonMain {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		HttpUtil httpUtil = new HttpUtil(Platform.WINDOWS);
-		
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		/*
+		HashMap<String, String> map = new HashMap<>();
+		map.put("das", "duagdbiyacgbiab");
+		map.put("daa", "daudohau");
+		map.put("dad", "dadgvy");
+		String[] uploadFiles = new String[2];
+		uploadFiles[0] = "/home/johnson/Desktop/uploadFile.txt";
+		uploadFiles[1] = "/home/johnson/Desktop/uploadFile2.txt";
+		System.out.println(httpUtil.multipleFileUploadWithParameters("http://127.0.0.1:8080/EBwebTest/Upload", uploadFiles, FileType.Text_TXT, map));
+		*/
+		/*
+		HashMap<String, String> map = new HashMap<>();
+		map.put("das", "duagdbiyacgbiab");
+		map.put("daa", "daudohau");
+		map.put("dad", "dadgvy");
+		System.out.println(httpUtil.singleFileUploadWithParameters("http://127.0.0.1:8080/EBwebTest/IPContentTest", "/home/johnson/Desktop/uploadFile2.txt", FileType.Text_TXT, map));
+		*/
 		
 		while(true){
-			String action = "";
-			try{
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				action = br.readLine();
-							
-			}catch(IOException e){
-				e.printStackTrace();
+			HashMap<String, String> map = new HashMap<>();
+			String key = "";
+			String value = "";
+			while(!key.equals("done")){
+				try{
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					key = br.readLine();
+					value = br.readLine();
+					
+					if(key.equals("done")){
+						break;
+					}
+					
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+				map.put(key, value);
 			}
-			httpUtil.getTest("http://115.28.192.61:8088/EBwebTest/Accounts?action=" + action);
+			System.out.println(httpUtil.executePost("http://115.28.192.61:8088/EBwebTest/Accounts", map));
 		}
 		
-		
+			
 		/*
-		HashMap<String, String> map = new HashMap();
+		HashMap<String, String> map = new HashMap<>();
 		String key = "";
 		String value = "";
 		while(!key.equals("done")){
@@ -69,7 +95,7 @@ public class JohnsonMain {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.singleFileUpload(fileName, "http://127.0.0.1:8080/EBwebTest/Upload", FileType.Audio_MP3);
+		httpUtil.singleFileUpload(fileName, "http://115.28.192.61:8088/EBwebTest/Upload", FileType.Text_TXT);
 		*/
 		
 		/*
