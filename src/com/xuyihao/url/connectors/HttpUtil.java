@@ -1,4 +1,4 @@
-package com.xuyihao.URLConnectors;
+package com.xuyihao.url.connectors;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -10,10 +10,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.xuyihao.url.enums.MIME_FileType;
+import com.xuyihao.url.enums.Platform;
+
 /**
  * Created by xuyihao on 2016/5/14.
  * @author johnson
  * @description 网络请求工具类
+ * @function 发送GET POST请求, 接收字符串返回值
  * @attention 添加会话(session)支持
  */
 public class HttpUtil {
@@ -233,7 +237,7 @@ public class HttpUtil {
 	 * @attention 上传文件name为file(服务器解析)
 	 * @return String("" if no response get)
 	 * */
-	public String singleFileUpload(String actionURL, String uploadFile, FileType fileType){
+	public String singleFileUpload(String actionURL, String uploadFile, MIME_FileType fileType){
 		String response = "";
 		try{
         	URL url = new URL(actionURL);
@@ -260,7 +264,7 @@ public class HttpUtil {
         	//防止中文乱码
         	ds.write(fileName.getBytes());
         	ds.writeBytes("\"" + end);
-        	ds.writeBytes(fileType.getValue() + end);
+        	ds.writeBytes("Content-Type: " + fileType.getValue() + end);
         	ds.writeBytes(end);
         	//根据路径读取文件
         	FileInputStream fis = new FileInputStream(uploadFile);
@@ -305,7 +309,7 @@ public class HttpUtil {
      * @attention 上传文件name为file0,file1,file2,以此类推(服务器解析)
      * @return String("" if no response get)
      * */
-    public String multipleFileUpload(String actionURL, String[] uploadFiles, FileType fileType){
+    public String multipleFileUpload(String actionURL, String[] uploadFiles, MIME_FileType fileType){
         String response = "";
     	try{
             URL url = new URL(actionURL);
@@ -334,7 +338,7 @@ public class HttpUtil {
             	//防止中文乱码
             	ds.write(fileName.getBytes());
             	ds.writeBytes("\"" + end);            	
-            	ds.writeBytes(fileType.getValue() + end);
+            	ds.writeBytes("Content-Type: " + fileType.getValue() + end);
             	ds.writeBytes(end);
             	FileInputStream fis = new FileInputStream(uploadFile);
             	byte[] buffer = new byte[1024];
@@ -381,7 +385,7 @@ public class HttpUtil {
      * @return String("" if no response get)
      * @attention 上传文件name为file(服务器解析)
      * */
-    public String singleFileUploadWithParameters(String actionURL, String uploadFile, FileType fileType, HashMap<String, String> parameters){
+    public String singleFileUploadWithParameters(String actionURL, String uploadFile, MIME_FileType fileType, HashMap<String, String> parameters){
     	String response = "";
     	try{
         	URL url = new URL(actionURL);
@@ -420,7 +424,7 @@ public class HttpUtil {
         	//防止中文乱码
         	ds.write(fileName.getBytes());
         	ds.writeBytes("\"" + end);
-        	ds.writeBytes(fileType.getValue() + end);
+        	ds.writeBytes("Content-Type: " + fileType.getValue() + end);
         	ds.writeBytes(end);
         	//根据路径读取文件
         	FileInputStream fis = new FileInputStream(uploadFile);
@@ -467,7 +471,7 @@ public class HttpUtil {
      * @return String("" if no response get)
      * @attention 上传文件name为file0,file1,file2,以此类推(服务器解析)
      * */
-    public String multipleFileUploadWithParameters(String actionURL, String[] uploadFiles, FileType fileType, HashMap<String, String> parameters){
+    public String multipleFileUploadWithParameters(String actionURL, String[] uploadFiles, MIME_FileType fileType, HashMap<String, String> parameters){
     	String response = "";
     	try{
         	URL url = new URL(actionURL);
@@ -508,7 +512,7 @@ public class HttpUtil {
             	//防止中文乱码
             	ds.write(fileName.getBytes());
             	ds.writeBytes("\"" + end);            	
-            	ds.writeBytes(fileType.getValue() + end);
+            	ds.writeBytes("Content-Type: " + fileType.getValue() + end);
             	ds.writeBytes(end);
             	//读取磁盘文件
             	FileInputStream fis = new FileInputStream(uploadFile);

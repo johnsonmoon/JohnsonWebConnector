@@ -1,4 +1,4 @@
-package com.xuyihao.URLConnectors;
+package com.xuyihao.url.enums;
 
 /**
  * created by xuyihao on 2016/5/15

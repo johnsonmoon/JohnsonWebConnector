@@ -1,13 +1,15 @@
 package com.xuyihao.main;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import com.xuyihao.URLConnectors.FileType;
-import com.xuyihao.URLConnectors.HttpUtil;
-import com.xuyihao.URLConnectors.Platform;
+import com.xuyihao.url.enums.*;
+import com.xuyihao.url.connectors.*;
 
 /**
  * created by xuyihao on 2016/5/14
@@ -20,8 +22,40 @@ public class JohnsonMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		
+		
+		//HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		
+		/*
+		DownUtil downUtil = new DownUtil();
+		
+		
+		
+		HashMap<String, String> map = new HashMap<>();
+		map.put("FilePathName", "new/down2.doc");
+		System.out.println(downUtil.downloadByPost("/home/johnson/Desktop/hahahahah.doc", "http://127.0.0.1:8080/EBwebTest/Download", map));
+		*/
+		
+		
+		/*
+		HashMap<String, String> map = new HashMap<>();
+		map.put("FilePathName", "new/down.txt");
+		byte[] result = downUtil.downloadByPost("http://127.0.0.1:8080/EBwebTest/Download", map);
+		File file = new File("/home/johnson/Desktop/newFileJohnson.txt");
+		FileOutputStream out;
+		try {
+			out = new FileOutputStream(file);
+			out.write(result);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		*/
+		
+		
+		
+		
+		
+		
 		/*
 		HashMap<String, String> map = new HashMap<>();
 		map.put("das", "duagdbiyacgbiab");
@@ -40,6 +74,7 @@ public class JohnsonMain {
 		System.out.println(httpUtil.singleFileUploadWithParameters("http://127.0.0.1:8080/EBwebTest/IPContentTest", "/home/johnson/Desktop/uploadFile2.txt", FileType.Text_TXT, map));
 		*/
 		
+		/*
 		while(true){
 			HashMap<String, String> map = new HashMap<>();
 			String key = "";
@@ -61,7 +96,7 @@ public class JohnsonMain {
 			}
 			System.out.println(httpUtil.executePost("http://115.28.192.61:8088/EBwebTest/Accounts", map));
 		}
-		
+		*/
 			
 		/*
 		HashMap<String, String> map = new HashMap<>();
@@ -95,7 +130,7 @@ public class JohnsonMain {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.singleFileUpload(fileName, "http://115.28.192.61:8088/EBwebTest/Upload", FileType.Text_TXT);
+		httpUtil.singleFileUpload(fileName, "http://115.28.192.61:8088/EBwebTest/Upload", MIME_FileType.Text_TXT);
 		*/
 		
 		/*
@@ -109,8 +144,10 @@ public class JohnsonMain {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.multipleFileUpload(fileNames, "http://127.0.0.1:8080/EBwebTest/Upload", FileType.Text_TXT);
+		httpUtil.multipleFileUpload(fileNames, "http://127.0.0.1:8080/EBwebTest/Upload", MIME_FileType.Text_TXT);
 		*/
 	}
+	
+	
 
 }
