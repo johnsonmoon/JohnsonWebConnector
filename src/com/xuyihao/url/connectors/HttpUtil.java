@@ -33,6 +33,7 @@ public class HttpUtil {
 	
     /**
      * constructor
+     * @atention 默认使用此工具的平台是LINUX
      * */
 	public HttpUtil(){
 		
@@ -129,7 +130,7 @@ public class HttpUtil {
 	 * @description 执行发送post请求的方法
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求数据段中的参数,以HashMap<String, String>形式传入key=value值
-	 * @attention 
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return String("" if no response get)
 	 * */
 	public String executePost(String actionURL, HashMap<String, String> parameters){
@@ -187,6 +188,7 @@ public class HttpUtil {
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求URL后跟着的具体参数,以HashMap<String, String>形式传入key=value值
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa)
+	 *  @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return String("" if no response get)
 	 * */
 	public String executeGet(String actionURL, HashMap<String, String> parameters){
@@ -235,6 +237,7 @@ public class HttpUtil {
 	 * @param actionURL 上传文件的URL
 	 * @param fileType 文件类型(枚举类型)
 	 * @attention 上传文件name为file(服务器解析)
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return String("" if no response get)
 	 * */
 	public String singleFileUpload(String actionURL, String uploadFile, MIME_FileType fileType){
@@ -307,6 +310,7 @@ public class HttpUtil {
      * @param actionURL 上传文件的URL地址包括URL
      * @param fileType 文件类型(枚举类型)
      * @attention 上传文件name为file0,file1,file2,以此类推(服务器解析)
+     * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
      * @return String("" if no response get)
      * */
     public String multipleFileUpload(String actionURL, String[] uploadFiles, MIME_FileType fileType){
@@ -384,6 +388,7 @@ public class HttpUtil {
      * @param parameters 跟文件一起传输的参数(HashMap)
      * @return String("" if no response get)
      * @attention 上传文件name为file(服务器解析)
+     * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
      * */
     public String singleFileUploadWithParameters(String actionURL, String uploadFile, MIME_FileType fileType, HashMap<String, String> parameters){
     	String response = "";
@@ -469,6 +474,7 @@ public class HttpUtil {
      * @param uploadFiles 上传文件的路径字符串数组,表示多个文件
      * @param parameters 跟文件一起传输的参数(HashMap)
      * @return String("" if no response get)
+     * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
      * @attention 上传文件name为file0,file1,file2,以此类推(服务器解析)
      * */
     public String multipleFileUploadWithParameters(String actionURL, String[] uploadFiles, MIME_FileType fileType, HashMap<String, String> parameters){

@@ -35,8 +35,7 @@ public class DownUtil {
 	/**
 	 * constructor3
 	 * @author johnson
-	 * @description 通过此构造器可以区分使用此工具的平台，并且获取相应URL服务器的会话sessionID
-	 * @param platform 区分系统的枚举
+	 * @description 获取相应URL服务器的会话sessionID
 	 * @param actionURL 需要获取会话sessionID的URL
 	 * @attention 不一定会获取到URL的session
 	 * */
@@ -48,8 +47,7 @@ public class DownUtil {
 	 * @author johnson
 	 * @method getSessionIDFromCookie
 	 * @description 执行从cookie获取会话sessionID的方法，用于保持与服务器的会话
-	 * @param 
-	 * @param 
+	 * @param actionURL 需要获取会话sessionID的URL
 	 * @attention 执行次方法后执行其他请求方法将会提交cookie，保持会话
 	 * @return true if successfully
 	 * */
@@ -98,6 +96,7 @@ public class DownUtil {
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求URL后跟着的具体参数,以HashMap<String, String>形式传入key=value值
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return byte[] 返回一个储存文件内容的字节数组
 	 * */
 	public byte[] downloadByGet(String actionURL, HashMap<String, String> parameters){
@@ -145,6 +144,7 @@ public class DownUtil {
 	 * @param savePathName 文件在磁盘中的储存路径&文件名
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
 	 * @attention 最后文件会以savePathName的路径名形式存储到磁盘中
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return boolean 返回true如果接收文件成功
 	 * */
 	public boolean downloadByGet(String savePathName, String actionURL, HashMap<String, String> parameters){
@@ -197,6 +197,7 @@ public class DownUtil {
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求数据段中的参数,以HashMap<String, String>形式传入key=value值
 	 * @attention 请求内容在HTTP报文内容中
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return byte[] 返回一个储存文件内容的字节数组
 	 * */
 	public byte[] downloadByPost(String actionURL, HashMap<String, String> parameters){
@@ -255,6 +256,7 @@ public class DownUtil {
 	 * @param savePathName 文件在磁盘中的储存路径&文件名
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
 	 * @attention 最后文件会以savePathName的路径名形式存储到磁盘中
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return boolean 返回true如果接收文件成功
 	 * */
 	public boolean downloadByPost(String savePathName, String actionURL, HashMap<String, String> parameters){

@@ -1,43 +1,36 @@
-package com.xuyihao.main;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-
-import com.xuyihao.url.enums.*;
-import com.xuyihao.url.connectors.*;
+package com.xuyihao.test;
 
 /**
  * created by xuyihao on 2016/5/14
  * @author Johnson
+ * @attention 测试类,所有注释中的代码都可以通过测试
  * @description 主类,主函数
  * */
-public class JohnsonMain {
-
+public class Test {
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		
-		//HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		/*
+		HashMap<String, String> map = new HashMap<>();
+		map.put("FilePathName", "/new/[电影天堂www.dy2018.com]遗落战境BD国英双语中英双字.mkv");
+		MultiThreadDownUtil down = new MultiThreadDownUtil("http://127.0.0.1:8080/EBwebTest/Download", map, "/home/johnson/Desktop/new.rmvb", 5);
+		if(down.download()){
+			down.printCompleteRate(3);
+		}else{
+			System.out.println("下载出错!");
+		}
+		*/
 		
 		/*
 		DownUtil downUtil = new DownUtil();
-		
-		
-		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("FilePathName", "new/down2.doc");
 		System.out.println(downUtil.downloadByPost("/home/johnson/Desktop/hahahahah.doc", "http://127.0.0.1:8080/EBwebTest/Download", map));
 		*/
 		
-		
 		/*
+		DownUtil downUtil = new DownUtil();
 		HashMap<String, String> map = new HashMap<>();
 		map.put("FilePathName", "new/down.txt");
 		byte[] result = downUtil.downloadByPost("http://127.0.0.1:8080/EBwebTest/Download", map);
@@ -51,12 +44,8 @@ public class JohnsonMain {
 		}
 		*/
 		
-		
-		
-		
-		
-		
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		HashMap<String, String> map = new HashMap<>();
 		map.put("das", "duagdbiyacgbiab");
 		map.put("daa", "daudohau");
@@ -66,7 +55,9 @@ public class JohnsonMain {
 		uploadFiles[1] = "/home/johnson/Desktop/uploadFile2.txt";
 		System.out.println(httpUtil.multipleFileUploadWithParameters("http://127.0.0.1:8080/EBwebTest/Upload", uploadFiles, FileType.Text_TXT, map));
 		*/
+		
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		HashMap<String, String> map = new HashMap<>();
 		map.put("das", "duagdbiyacgbiab");
 		map.put("daa", "daudohau");
@@ -75,6 +66,7 @@ public class JohnsonMain {
 		*/
 		
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		while(true){
 			HashMap<String, String> map = new HashMap<>();
 			String key = "";
@@ -99,6 +91,7 @@ public class JohnsonMain {
 		*/
 			
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		HashMap<String, String> map = new HashMap<>();
 		String key = "";
 		String value = "";
@@ -117,12 +110,11 @@ public class JohnsonMain {
 			}
 			map.put(key, value);
 		}
-		
 		httpUtil.executeGet("http://115.28.192.61:8088/EBwebTest/Accounts", map);
 		*/
 		
-		
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		String fileName = "";
 		try{
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -134,6 +126,7 @@ public class JohnsonMain {
 		*/
 		
 		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
 		String[] fileNames = new String[2];
 		try{
 			InputStreamReader reader = new InputStreamReader(System.in);
@@ -146,8 +139,5 @@ public class JohnsonMain {
 		}
 		httpUtil.multipleFileUpload(fileNames, "http://127.0.0.1:8080/EBwebTest/Upload", MIME_FileType.Text_TXT);
 		*/
-	}
-	
-	
-
+	}	
 }
