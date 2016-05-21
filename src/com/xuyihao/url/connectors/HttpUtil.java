@@ -126,14 +126,16 @@ public class HttpUtil {
 	
 	/**
 	 * @author johnson
-	 * @method executePost
+	 * @method executePostByUsual
 	 * @description 执行发送post请求的方法
-	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
-	 * @param parameters 发送get请求数据段中的参数,以HashMap<String, String>形式传入key=value值
+	 * @param actionURL 发送post请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
+	 * @param parameters 发送post请求数据段中的参数,以HashMap<String, String>形式传入key=value值
+	 * @attention 发送请求使用enctype="application/x-www-form-urlencoded"编码方式
+	 * @attention 参数形式形如key1=value1&key2=value2
 	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return String("" if no response get)
 	 * */
-	public String executePost(String actionURL, HashMap<String, String> parameters){
+	public String executePostByUsual(String actionURL, HashMap<String, String> parameters){
 		String response = "";
 		try{
 			URL url = new URL(actionURL);
@@ -157,7 +159,8 @@ public class HttpUtil {
 			}
 			requestContent = requestContent.substring(0, requestContent.lastIndexOf("&"));
 			DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-			ds.writeBytes(requestContent);
+			//使用write(requestContent.getBytes())是为了防止中文出现乱码
+			ds.write(requestContent.getBytes());
 			ds.flush();
 			try{
 	        	//获取URL的响应
@@ -178,6 +181,75 @@ public class HttpUtil {
 			e.printStackTrace();
 			System.out.println("Request failed!");
 		}
+		return response;
+	}
+	
+	/**
+	 * @author johnson
+	 * @method executePostByMultipart
+	 * @description 执行发送post请求的方法
+	 * @param actionURL 发送post请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
+	 * @param parameters 发送post请求数据段中的参数,以HashMap<String, String>形式传入key=value值
+	 * @attention 发送请求使用enctype="multipart/form-data"编码方式
+	 * @attention 请求内容格式参考表单提交方式
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
+	 * @return String("" if no response get)
+	 * */
+	public String executePostByMultipart(String actionURL, HashMap<String, String> parameters){
+		String response = "";
+		try{
+        	URL url = new URL(actionURL);
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            //发送post请求需要下面两行
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            //设置请求参数
+            connection.setUseCaches(false);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Charset", "UTF-8");
+            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+            //如果存在会话，则写入会话sessionID到cookie里面
+			if(!this.sessionID.equals("")){
+				connection.setRequestProperty("cookie", this.sessionID);
+			}
+            //获取请求内容输出流                        
+            DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
+           	//开始写表单格式内容
+            //写参数
+            Set<String> keys = parameters.keySet();
+            for(String key : keys){
+            	ds.writeBytes(twoHyphens + boundary + end);
+            	ds.writeBytes("Content-Disposition: form-data; name=\"");
+            	//使用write(key.getBytes())是为了防止key是中文之后出现乱码
+            	ds.write(key.getBytes());
+            	ds.writeBytes("\"" + end);
+            	ds.writeBytes(end);
+            	ds.write(parameters.get(key).getBytes());
+            	ds.writeBytes(end);
+            }
+        	ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
+        	ds.writeBytes(end);
+        	ds.flush();
+	        try{
+	        	//获取URL的响应
+	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+	        	String s = "";
+	        	String temp = "";
+	        	while((temp = reader.readLine()) != null){
+	        		s += temp;
+	        	}
+	            response = s;
+	            reader.close();
+	        }catch(IOException e){
+	        	e.printStackTrace();
+	        	System.out.println("No response get!!!");
+	        }
+	        ds.close();
+	    }catch(IOException e){
+        	e.printStackTrace();
+        	System.out.println("Request failed!");
+        }
 		return response;
 	}
 	
@@ -254,7 +326,7 @@ public class HttpUtil {
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Charset", "UTF-8");
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-          //如果存在会话，则写入会话sessionID到cookie里面
+            //如果存在会话，则写入会话sessionID到cookie里面
 			if(!this.sessionID.equals("")){
 				connection.setRequestProperty("cookie", this.sessionID);
 			}
@@ -327,7 +399,7 @@ public class HttpUtil {
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Charset", "UTF-8");
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-          //如果存在会话，则写入会话sessionID到cookie里面
+            //如果存在会话，则写入会话sessionID到cookie里面
 			if(!this.sessionID.equals("")){
 				connection.setRequestProperty("cookie", this.sessionID);
 			}

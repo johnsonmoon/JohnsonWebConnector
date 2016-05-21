@@ -224,7 +224,8 @@ public class DownUtil {
 			}
 			requestContent = requestContent.substring(0, requestContent.lastIndexOf("&"));
 			DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-			ds.writeBytes(requestContent);
+			//防止中文乱码,使用String.getBytes()来获取字节数组
+			ds.write(requestContent.getBytes());
 			ds.flush();
 			try{
 	        	//获取URL的响应
@@ -283,7 +284,8 @@ public class DownUtil {
 			}
 			requestContent = requestContent.substring(0, requestContent.lastIndexOf("&"));
 			DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
-			ds.writeBytes(requestContent);
+			//防止中文乱码,使用String.getBytes()来获取字节数组
+			ds.write(requestContent.getBytes());
 			ds.flush();
 			try{
 	        	//获取URL的响应

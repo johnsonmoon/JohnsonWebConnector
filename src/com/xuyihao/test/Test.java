@@ -11,9 +11,10 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		/*
 		HashMap<String, String> map = new HashMap<>();
-		map.put("FilePathName", "/new/[电影天堂www.dy2018.com]遗落战境BD国英双语中英双字.mkv");
+		map.put("FilePathName", "/[电影天堂www.dy2018.com]分手大师BD中英双字.rmvb");
 		MultiThreadDownUtil down = new MultiThreadDownUtil("http://127.0.0.1:8080/EBwebTest/Download", map, "/home/johnson/Desktop/new.rmvb", 5);
 		if(down.download()){
 			down.printCompleteRate(3);
@@ -86,7 +87,57 @@ public class Test {
 				}
 				map.put(key, value);
 			}
-			System.out.println(httpUtil.executePost("http://115.28.192.61:8088/EBwebTest/Accounts", map));
+			System.out.println(httpUtil.executePostByUsual("http://115.28.192.61:8088/EBwebTest/Accounts", map));
+		}
+		*/
+		
+		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		while(true){
+			HashMap<String, String> map = new HashMap<>();
+			String key = "";
+			String value = "";
+			while(!key.equals("done")){
+				try{
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					key = br.readLine();
+					value = br.readLine();
+					
+					if(key.equals("done")){
+						break;
+					}
+					
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+				map.put(key, value);
+			}
+			System.out.println(httpUtil.executePostByUsual("http://127.0.0.1:8080/EBwebTest/Accounts", map));
+		}
+		*/
+		
+		/*
+		HttpUtil httpUtil = new HttpUtil(Platform.LINUX, "http://115.28.192.61:8088/EBwebTest/Accounts");
+		while(true){
+			HashMap<String, String> map = new HashMap<>();
+			String key = "";
+			String value = "";
+			while(!key.equals("done")){
+				try{
+					BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+					key = br.readLine();
+					value = br.readLine();
+					
+					if(key.equals("done")){
+						break;
+					}
+					
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+				map.put(key, value);
+			}
+			System.out.println(httpUtil.executePostByMultipart("http://127.0.0.1:8080/EBwebTest/Accounts", map));
 		}
 		*/
 			
