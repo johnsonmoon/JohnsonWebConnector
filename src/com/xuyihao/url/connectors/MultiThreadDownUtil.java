@@ -32,9 +32,20 @@ public class MultiThreadDownUtil {
 	/**
 	 * constructor
 	 * @author johnson
+	 * @param actionURL 需要下载资源的URL地址,不跟参数,或者直接将参数写在URL上面
+	 * @param threadNumber 需要启动的下载线程数量
+	 * */
+	public MultiThreadDownUtil(String actionURL, int threadNumber){
+		this.trueRequestURL = actionURL;
+		this.threadNum = threadNumber;
+		this.threads = new DownloadThread[this.threadNum];
+	}
+	
+	/**
+	 * constructor
+	 * @author johnson
 	 * @param actionURL 需要下载资源的URL地址
 	 * @param parameters URL后的具体参数，以key=value的形式传递
-	 * @param targetFile 保存在磁盘的文件路径名称(绝对路径名)
 	 * @param threadNumber 需要启动的下载线程数量
 	 * */
 	public MultiThreadDownUtil(String actionURL, HashMap<String, String> parameters, int threadNumber){
@@ -54,7 +65,6 @@ public class MultiThreadDownUtil {
 	 * @author johnson
 	 * @param actionURL 需要下载资源的URL地址
 	 * @param parameters URL后的具体参数，以key=value的形式传递
-	 * @param targetFile 保存在磁盘的文件路径名称(绝对路径名)
 	 * @param threadNumber 需要启动的下载线程数量
 	 * @param httpUtil 已经获取sessionID的HttpUtil工具类,用来初始化本类的sessionID
 	 * */
@@ -96,6 +106,7 @@ public class MultiThreadDownUtil {
 	 * @method download
 	 * @author johnson
 	 * @throws Exception
+	 * @param targetFilePathName 文件的目标保存完整路径文件名称
 	 * @description method which starts the downloading
 	 * @description 开始多线程下载
 	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
@@ -356,7 +367,7 @@ public class MultiThreadDownUtil {
 		public void run(){
 			while(true){
 				String rate = String.valueOf(down.getCompleteRate() * 100);
-				rate = rate.substring(0, rate.indexOf(".") + 3) + "%";
+				rate = rate.substring(0, rate.indexOf(".") + 2) + "%";
 				System.out.println("Downloading....." + rate);
 				try{
 					Thread.sleep(this.showTime);

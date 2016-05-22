@@ -258,6 +258,48 @@ public class HttpUtil {
 	 * @method executeGet
 	 * @description 执行发送get请求的方法	
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
+	 * @description 直接通过actionURL发送请求,用户也可以自己设置actionURL后面的参数
+	 * @description 这个方法比HashMap传递参数的方法性能要高
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
+	 * @return String("" if no response get)
+	 * */
+	public String executeGet(String actionURL){
+		String response = "";
+		try{
+			String trueRequestURL = actionURL;
+			URL url = new URL(trueRequestURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			//如果存在会话，则写入会话sessionID到cookie里面
+			if(!this.sessionID.equals("")){
+				connection.setRequestProperty("cookie", this.sessionID);
+			}
+			try{
+	        	//获取URL的响应
+	        	BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+	        	String s = "";
+	        	String temp = "";
+	        	while((temp = reader.readLine()) != null){
+	        		s += temp;
+	        	}
+	            response = s;
+	            reader.close();
+	        }catch(IOException e){
+	        	e.printStackTrace();
+	        	System.out.println("No response get!!!");
+	        }
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("Request failed!");
+		}
+		return response;
+	}
+	
+	/**
+	 * @author johnson
+	 * @method executeGet
+	 * @description 执行发送get请求的方法	
+	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求URL后跟着的具体参数,以HashMap<String, String>形式传入key=value值
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa)
 	 *  @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
