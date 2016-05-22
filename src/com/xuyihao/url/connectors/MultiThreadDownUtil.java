@@ -14,7 +14,7 @@ import java.util.Set;
  * @description 网络资源(文件)多线程下载工具类
  * @attention 发送GET请求，接收网络文件
  * @attention 此工具类支持多线程下载
- * @attention 添加会话(session)支持
+ * @attention 添加会话(session)支持,在一些需要保持会话状态下载文件的情况下,通过HttpUtil获取的sessionID进行sessionID的初始化
  * @attention 需要服务器端发送文件内容长度响应，即响应头部包含文件长度Content-length
  * @attention 如果获取不到文件长度，则download方法会结束并返回false
  * */
@@ -48,42 +48,39 @@ public class MultiThreadDownUtil {
 		this.threadNum = threadNumber;
 		this.threads = new DownloadThread[this.threadNum];
 	}
-		
+	
 	/**
+	 * constructor
 	 * @author johnson
-	 * @method getSessionIDFromCookie
-	 * @description 执行从cookie获取会话sessionID的方法，用于保持与服务器的会话
-	 * @param actionURL 需要获取会话的URL地址
-	 * @attention 执行次方法后执行其他请求方法将会提交cookie，保持会话
-	 * @return true if successfully
+	 * @param actionURL 需要下载资源的URL地址
+	 * @param parameters URL后的具体参数，以key=value的形式传递
+	 * @param targetFile 保存在磁盘的文件路径名称(绝对路径名)
+	 * @param threadNumber 需要启动的下载线程数量
+	 * @param httpUtil 已经获取sessionID的HttpUtil工具类,用来初始化本类的sessionID
 	 * */
-	public boolean getSessionIDFromCookie(String actionURL){
-		boolean flag = false;
-		try {
-			URL url = new URL(actionURL);
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			String cookieValue = connection.getHeaderField("set-cookie");
-			if(cookieValue != null){
-				this.sessionID = cookieValue.substring(0, cookieValue.indexOf(";"));
-				flag = true;
-			}else{
-				flag = false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			flag = false;
+	public MultiThreadDownUtil(String actionURL, HashMap<String, String> parameters, int threadNumber, HttpUtil httpUtil){
+		this.trueRequestURL = actionURL;
+		trueRequestURL += "?";
+		Set<String> keys = parameters.keySet();
+		for(String key : keys){
+			trueRequestURL = trueRequestURL + key + "=" + parameters.get(key) + "&";
 		}
-		return flag;
+		trueRequestURL = trueRequestURL.substring(0, trueRequestURL.lastIndexOf("&"));
+		this.threadNum = threadNumber;
+		this.threads = new DownloadThread[this.threadNum];
+		this.sessionID = httpUtil.getSessionID();
 	}
 	
 	/**
 	 * @author johnson
-	 * @method getSessionID
-	 * @description 获取此工具类的sessionID
-	 * @return String
+	 * @method setSessionID
+	 * @param httpUtil 已经获取sessionID的HttpUtil工具类
+	 * @description 通过本包的HttoUtil工具类已经获取的sessionID来对本工具sessionID进行初始化的方法
+	 * @attention 只能通过传入HttpUtil工具类来进行初始化,避免直接对sessionID字串进行赋值
+	 * @attention 适用于一些只能保持会话状态才能下载文件的情况
 	 * */
-	public String getSessionID(){
-		return this.sessionID;
+	public void setSessionID(HttpUtil httpUtil){
+		this.sessionID = httpUtil.getSessionID();
 	}
 	
 	/**

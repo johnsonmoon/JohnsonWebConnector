@@ -16,7 +16,7 @@ import java.util.Set;
  * @description 网络资源(文件)下载工具类
  * @attention 发送GET POST请求，接收网络文件
  * @attention 此工具类不支持多线程下载，IO阻塞线程
- * @attention 添加会话(session)支持
+ * @attention 添加会话(session)支持,在一些需要保持会话状态下载文件的情况下,通过HttpUtil获取的sessionID进行sessionID的初始化
  * */
 public class DownUtil {
 	/**
@@ -33,51 +33,23 @@ public class DownUtil {
 	}
 	
 	/**
-	 * constructor3
-	 * @author johnson
-	 * @description 获取相应URL服务器的会话sessionID
-	 * @param actionURL 需要获取会话sessionID的URL
-	 * @attention 不一定会获取到URL的session
+	 * constructor2
+	 * @param httpUtil 已经获取sessionID的HttpUtil工具类,用来初始化本类的sessionID
 	 * */
-	public DownUtil(String actionURL){
-		this.getSessionIDFromCookie(actionURL);
+	public DownUtil(HttpUtil httpUtil){
+		this.sessionID = httpUtil.getSessionID();
 	}
 	
 	/**
 	 * @author johnson
-	 * @method getSessionIDFromCookie
-	 * @description 执行从cookie获取会话sessionID的方法，用于保持与服务器的会话
-	 * @param actionURL 需要获取会话sessionID的URL
-	 * @attention 执行次方法后执行其他请求方法将会提交cookie，保持会话
-	 * @return true if successfully
+	 * @method setSessionID
+	 * @param httpUtil 已经获取sessionID的HttpUtil工具类
+	 * @description 通过本包的HttoUtil工具类已经获取的sessionID来对本工具sessionID进行初始化的方法
+	 * @attention 只能通过传入HttpUtil工具类来进行初始化,避免直接对sessionID字串进行赋值
+	 * @attention 适用于一些只能保持会话状态才能下载文件的情况
 	 * */
-	public boolean getSessionIDFromCookie(String actionURL){
-		boolean flag = false;
-		try {
-			URL url = new URL(actionURL);
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			String cookieValue = connection.getHeaderField("set-cookie");
-			if(cookieValue != null){
-				this.sessionID = cookieValue.substring(0, cookieValue.indexOf(";"));
-				flag = true;
-			}else{
-				flag = false;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			flag = false;
-		}
-		return flag;
-	}
-	
-	/**
-	 * @author johnson
-	 * @method getSessionID
-	 * @description 获取此工具类的sessionID
-	 * @return String
-	 * */
-	public String getSessionID(){
-		return this.sessionID;
+	public void setSessionID(HttpUtil httpUtil){
+		this.sessionID = httpUtil.getSessionID();
 	}
 	
 	/**
