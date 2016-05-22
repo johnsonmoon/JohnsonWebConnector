@@ -25,7 +25,6 @@ public class MultiThreadDownUtil {
 	 * */
 	private String sessionID = "";
 	private String trueRequestURL = "";
-	private String targetFileName = "";
 	private int threadNum = 0;
 	private long fileSize = 0;
 	private DownloadThread[] threads;
@@ -38,7 +37,7 @@ public class MultiThreadDownUtil {
 	 * @param targetFile 保存在磁盘的文件路径名称(绝对路径名)
 	 * @param threadNumber 需要启动的下载线程数量
 	 * */
-	public MultiThreadDownUtil(String actionURL, HashMap<String, String> parameters, String targetFile, int threadNumber){
+	public MultiThreadDownUtil(String actionURL, HashMap<String, String> parameters, int threadNumber){
 		this.trueRequestURL = actionURL;
 		trueRequestURL += "?";
 		Set<String> keys = parameters.keySet();
@@ -46,7 +45,6 @@ public class MultiThreadDownUtil {
 			trueRequestURL = trueRequestURL + key + "=" + parameters.get(key) + "&";
 		}
 		trueRequestURL = trueRequestURL.substring(0, trueRequestURL.lastIndexOf("&"));
-		this.targetFileName = targetFile;
 		this.threadNum = threadNumber;
 		this.threads = new DownloadThread[this.threadNum];
 	}
@@ -98,7 +96,7 @@ public class MultiThreadDownUtil {
 	}
 
 	/**
-	 * @method
+	 * @method download
 	 * @author johnson
 	 * @throws Exception
 	 * @description method which starts the downloading
@@ -106,7 +104,7 @@ public class MultiThreadDownUtil {
 	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
 	 * @return boolean true if successfully, false if failed 如果成功,返回true并开始下载,如果失败返回false
 	 * */
-	public boolean download(){
+	public boolean download(String targetFilePathName){
 		boolean flag = false;
 		try{
 			URL url = new URL(trueRequestURL);
@@ -129,7 +127,7 @@ public class MultiThreadDownUtil {
 				this.fileSize = connection.getContentLength();
 				connection.disconnect();
 				long currentPartSize = this.fileSize / this.threadNum + 1;
-				RandomAccessFile file = new RandomAccessFile(this.targetFileName, "rw");
+				RandomAccessFile file = new RandomAccessFile(targetFilePathName, "rw");
 				//set the file size of the local file which would be written
 				file.setLength(this.fileSize);
 				file.close();
@@ -137,7 +135,7 @@ public class MultiThreadDownUtil {
 					//calculate the start position for each thread
 					long startPosition = i * currentPartSize;
 					//each thread use one RandomAccessFile to download
-					RandomAccessFile currentFilePart = new RandomAccessFile(this.targetFileName, "rw");
+					RandomAccessFile currentFilePart = new RandomAccessFile(targetFilePathName, "rw");
 					//locate the download position for the thread
 					currentFilePart.seek(startPosition);
 					//create thread
@@ -157,6 +155,77 @@ public class MultiThreadDownUtil {
 		return flag;
 	}
 
+	/**
+	 * @method downloadToPath
+	 * @author johnson
+	 * @throws Exception
+	 * @param targetPath 文件存放路径,文件名将从服务器响应中获取
+	 * @description method which starts the downloading
+	 * @description 开始多线程下载
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
+	 * @attention 如果没有获取服务器响应的文件名,则返回false,结束下载
+	 * @return boolean true if successfully, false if failed 如果成功,返回true并开始下载,如果失败返回false
+	 * */
+	public boolean downloadToPath(String targetPath){
+		boolean flag = false;
+		try{
+			URL url = new URL(trueRequestURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setConnectTimeout(5*1000);
+			connection.setRequestMethod("GET");
+			//如果存在会话，则写入会话sessionID到cookie里面
+			if(!this.sessionID.equals("")){
+				connection.setRequestProperty("cookie", this.sessionID);
+			}
+			connection.setRequestProperty("Accept",	"image/gif, image/jpeg, image/pjpeg, image/pjpeg, " + "application/x-shockwave-flash, application/xaml+xml, " + "application/vnd.ms-xpsdocument, application/x-ms-xbap, " + "application/x-ms-application, application/vnd.ms-excel, " + "application/vnd.ms-powerpoint, application/msword, */*");
+			connection.setRequestProperty("Accept-Language", "zh-CN");
+			connection.setRequestProperty("Charset", "UTF-8");
+			connection.setRequestProperty("Connection", "Keep-Alive");
+			//check whether wen can get the exact length by the server, if not, stop the program
+			//检查能否获取到准确的文件长度，如果不能则结束程序并报错
+			if(connection.getContentLength() == -1){
+				flag = false;
+			}else{
+				//检查是否获取文件名,如果没有获取返回false
+				String ContentDisposition = connection.getHeaderField("Content-Disposition");
+				if(ContentDisposition == null){
+					System.out.println("No file name get from the response header!");
+					flag = false;
+				}else{
+					String fileName = ContentDisposition.substring(ContentDisposition.lastIndexOf("filename=\"") + 10);
+					fileName = fileName.substring(0, fileName.indexOf("\""));
+					this.fileSize = connection.getContentLength();
+					connection.disconnect();
+					long currentPartSize = this.fileSize / this.threadNum + 1;
+					RandomAccessFile file = new RandomAccessFile(targetPath + fileName, "rw");
+					//set the file size of the local file which would be written
+					file.setLength(this.fileSize);
+					file.close();
+					for(int i = 0; i < this.threadNum; i++){
+						//calculate the start position for each thread
+						long startPosition = i * currentPartSize;
+						//each thread use one RandomAccessFile to download
+						RandomAccessFile currentFilePart = new RandomAccessFile(targetPath + fileName, "rw");
+						//locate the download position for the thread
+						currentFilePart.seek(startPosition);
+						//create thread
+						if(this.sessionID.equals("")){
+							threads[i] = new DownloadThread(startPosition, currentPartSize, currentFilePart);
+						}else{
+							threads[i] = new DownloadThread(startPosition, currentPartSize, currentFilePart, this.sessionID);
+						}
+						threads[i].start();
+					}
+					flag = true;
+				}
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+			flag = false;
+		}
+		return flag;
+	}
+	
 	/**
 	 * @author johnson
 	 * @method getCompleteRate

@@ -11,16 +11,35 @@ public class Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		/*
+		DownUtil down = new DownUtil();
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("FilePathName", "大悲咒.wma");
+		System.out.println(down.downloadByGetSaveToPath("/home/johnson/Desktop/temp/", "http://127.0.0.1:8080/EBwebTest/Download", map));
+		*/
+		/*
+		DownUtil down = new DownUtil();
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("FilePathName", "大悲咒.wma");
+		System.out.println(down.downloadByPostSaveToPath("/home/johnson/Desktop/temp/", "http://127.0.0.1:8080/EBwebTest/Download", map));
+		*/
 		
 		/*
 		HashMap<String, String> map = new HashMap<>();
-		map.put("FilePathName", "/[电影天堂www.dy2018.com]分手大师BD中英双字.rmvb");
-		MultiThreadDownUtil down = new MultiThreadDownUtil("http://127.0.0.1:8080/EBwebTest/Download", map, "/home/johnson/Desktop/new.rmvb", 5);
-		if(down.download()){
+		map.put("FilePathName", "temp/[电影天堂www.dy2018.com]分手大师BD中英双字.rmvb");
+		MultiThreadDownUtil down = new MultiThreadDownUtil("http://127.0.0.1:8080/EBwebTest/Download", map, 5);
+		if(down.downloadToPath("/home/johnson/Desktop/")){
 			down.printCompleteRate(3);
 		}else{
 			System.out.println("下载出错!");
 		}
+		*/
+		
+		/*
+		DownUtil down = new DownUtil();
+		HashMap<String, String> map = new HashMap<>();
+		map.put("FilePathName", "001-01.wma");
+		System.out.println(down.downloadByPost("/home/johnson/Desktop/001-01.wma", "http://115.28.192.61:8088/EBwebTest/Download", map));
 		*/
 		
 		/*
@@ -173,7 +192,7 @@ public class Test {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-		httpUtil.singleFileUpload(fileName, "http://115.28.192.61:8088/EBwebTest/Upload", MIME_FileType.Text_TXT);
+		httpUtil.singleFileUpload("http://115.28.192.61:8088/EBwebTest/Upload", fileName, MIME_FileType.Text_txt);
 		*/
 		
 		/*

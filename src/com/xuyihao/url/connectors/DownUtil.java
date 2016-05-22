@@ -141,7 +141,7 @@ public class DownUtil {
 	 * @description 执行Get请求下载文件的方法
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求URL后跟着的具体参数,以HashMap<String, String>形式传入key=value值
-	 * @param savePathName 文件在磁盘中的储存路径&文件名
+	 * @param savePathName 文件在磁盘中的储存路径&文件名,文件路径+名称需要自己定义
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
 	 * @attention 最后文件会以savePathName的路径名形式存储到磁盘中
 	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
@@ -182,6 +182,70 @@ public class DownUtil {
 	        	flag = false;
 	        	System.out.println("No response get!!!");
 	        }
+		}catch(IOException e){
+			e.printStackTrace();
+			flag = false;
+			System.out.println("Request failed!");
+		}
+		return flag;
+	}
+	
+	/**
+	 * @author johnson
+	 * @method downloadByGetSaveToPath
+	 * @description 执行Get请求下载文件的方法
+	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
+	 * @param parameters 发送get请求URL后跟着的具体参数,以HashMap<String, String>形式传入key=value值
+	 * @param savePath 文件在磁盘中的储存路径,文件名会从服务器获得
+	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
+	 * @attention 最后文件会存储到savePath路径中,路径需要以参数方式传入,文件名通过服务器获得
+	 * @attention 如果没有获取服务器响应传回的文件名,则返回false
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
+	 * @return boolean 返回true如果接收文件成功
+	 * */
+	public boolean downloadByGetSaveToPath(String savePath, String actionURL, HashMap<String, String> parameters){
+		boolean flag = false;
+		try{
+			String trueRequestURL = actionURL;
+			trueRequestURL += "?";
+			Set<String> keys = parameters.keySet();
+			for(String key : keys){
+				trueRequestURL = trueRequestURL + key + "=" + parameters.get(key) + "&";
+			}
+			trueRequestURL = trueRequestURL.substring(0, trueRequestURL.lastIndexOf("&"));
+			URL url = new URL(trueRequestURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			//如果存在会话，则写入会话sessionID到cookie里面
+			if(!this.sessionID.equals("")){
+				connection.setRequestProperty("cookie", this.sessionID);
+			}
+			String ContentDisposition = connection.getHeaderField("Content-Disposition");
+			if(ContentDisposition == null){
+				System.out.println("No file name get from the response header!");
+				flag = false;
+			}else{
+				String fileName = ContentDisposition.substring(ContentDisposition.lastIndexOf("filename=\"") + 10);
+				fileName = fileName.substring(0, fileName.indexOf("\""));
+				try{
+		        	//获取URL的响应
+		        	InputStream in = connection.getInputStream();
+		        	File file = new File(savePath + fileName);
+		        	FileOutputStream out = new FileOutputStream(file);
+		        	byte[] b = new byte[1024];
+		        	int length = 0;
+		        	while((length = in.read(b)) != -1){
+		        		out.write(b, 0, length);
+		        	}
+		        	in.close();
+		        	out.close();
+		        	flag = true;
+		        }catch(IOException e){
+		        	e.printStackTrace();
+		        	flag = false;
+		        	System.out.println("No response get!!!");
+		        }
+			}
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
@@ -248,13 +312,14 @@ public class DownUtil {
 		return data;
 	}
 	
+	
 	/**
 	 * @author johnson
 	 * @method downloadByPost
 	 * @description 执行发送post请求的方法
 	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
 	 * @param parameters 发送get请求数据段中的参数,以HashMap<String, String>形式传入key=value值
-	 * @param savePathName 文件在磁盘中的储存路径&文件名
+	 * @param savePathName 文件在磁盘中的储存路径&文件名,文件路径+名称需要自己定义
 	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
 	 * @attention 最后文件会以savePathName的路径名形式存储到磁盘中
 	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
@@ -306,6 +371,81 @@ public class DownUtil {
 	        	System.out.println("No response get!!!");
 	        }
 	        ds.close();
+		}catch(IOException e){
+			e.printStackTrace();
+			flag = false;
+			System.out.println("Request failed!");
+		}
+		return flag;
+	}
+	
+	/**
+	 * @author johnson
+	 * @method downloadByPostSaveToPath
+	 * @description 执行发送post请求的方法
+	 * @param actionURL 发送get请求的URL地址(例如：http://www.johnson.cc:8080/Test/download)
+	 * @param parameters 发送get请求数据段中的参数,以HashMap<String, String>形式传入key=value值
+	 * @param savePath 文件在磁盘中的储存路径,文件名会从服务器获得
+	 * @attention 最后发送的URL格式为(例如: http://www.johnson.cc:8080/Test/download?file=file1&name=XXX&pwd=aaa) 
+	 * @attention 最后文件会存储到savePath路径中,路径需要以参数方式传入,文件名通过服务器获得
+	 * @attention 如果没有获取服务器响应传回的文件名,则返回false
+	 * @attention 如果存在会话，本方法可以保持会话，如果要消除会话，请使用invalidateSessionID方法
+	 * @return boolean 返回true如果接收文件成功
+	 * */
+	public boolean downloadByPostSaveToPath(String savePath, String actionURL, HashMap<String, String> parameters){
+		boolean flag = false;
+		try{
+			URL url = new URL(actionURL);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			connection.setUseCaches(false);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Connection", "Keep-Alive");
+			connection.setRequestProperty("Charset", "UTF-8");;
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			//如果存在会话，则写入会话sessionID到cookie里面
+			if(!this.sessionID.equals("")){
+				connection.setRequestProperty("cookie", this.sessionID);
+			}
+			//设置请求数据内容
+			String requestContent = "";
+			Set<String> keys = parameters.keySet();
+			for(String key : keys){
+				requestContent = requestContent + key + "=" + parameters.get(key) + "&";
+			}
+			requestContent = requestContent.substring(0, requestContent.lastIndexOf("&"));
+			DataOutputStream ds = new DataOutputStream(connection.getOutputStream());
+			//防止中文乱码,使用String.getBytes()来获取字节数组
+			ds.write(requestContent.getBytes());
+			ds.flush();
+			String ContentDisposition = connection.getHeaderField("Content-Disposition");
+			if(ContentDisposition == null){
+				System.out.println("No file name get from the response header!");
+				flag = false;
+			}else{
+				String fileName = ContentDisposition.substring(ContentDisposition.lastIndexOf("filename=\"") + 10);
+				fileName = fileName.substring(0, fileName.indexOf("\""));
+				try{
+		        	//获取URL的响应
+					InputStream in = connection.getInputStream();
+		        	File file = new File(savePath + fileName);
+		        	FileOutputStream out = new FileOutputStream(file);
+		        	byte[] b = new byte[1024];
+		        	int length = 0;
+		        	while((length = in.read(b)) != -1){
+		        		out.write(b, 0, length);
+		        	}
+		        	in.close();
+		        	out.close();
+		        	flag = true;
+		        }catch(IOException e){
+		        	e.printStackTrace();
+		        	flag = false;
+		        	System.out.println("No response get!!!");
+		        }
+		        ds.close();
+			}
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
