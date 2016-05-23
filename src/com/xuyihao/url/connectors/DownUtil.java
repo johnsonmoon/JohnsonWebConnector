@@ -741,6 +741,7 @@ public class DownUtil {
 	 * @method getCompleteRate
 	 * @description get the complete percentage of downloading
 	 * @description 下载完成度百分比(double 显示)
+	 * @attention 如果获取不到服务器响应的文件大小,则返回0.01并且下载完成之后返回1.01
 	 * @return double percentage
 	 * */
 	public double getCompleteRate(){
