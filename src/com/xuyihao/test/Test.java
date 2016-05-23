@@ -13,6 +13,13 @@ public class Test {
 	public static void main(String[] args) {
 		
 		/*
+		DownUtil down = new DownUtil();
+		down.initializeStates();
+		down.printCompleteRate(2);
+		down.downloadByGet("/home/johnson/Desktop/ajdij.rar", "http://file01.16sucai.com/d/file/2011/0808/20110808122856159.rar");
+		*/
+		
+		/*
 		MultiThreadDownUtil d = new MultiThreadDownUtil("http://file01.16sucai.com/d/file/2011/0808/20110808122856159.rar", 4);
 		d.download("/home/johnson/Desktop/123444.rar");
 		d.printCompleteRate(1);

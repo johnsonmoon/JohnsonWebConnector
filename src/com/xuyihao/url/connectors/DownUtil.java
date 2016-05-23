@@ -17,6 +17,7 @@ import java.util.Set;
  * @attention 发送GET POST请求，接收网络文件
  * @attention 此工具类不支持多线程下载，IO阻塞线程
  * @attention 由于下载时候的IO阻碍主线程,所以需要使用 getCompleteRate printCompleteRate 等方法时候需要先调用这几个方法,再开启下载方法
+ * @attention 并且需要注意的是, 调用getCompleteRate printCompleteRate等方法之前需要先调用initializeStates方法初始化状态变量
  * @attention 如果需要新建线程并使用 getCompleteRate 方法查看进度, 也需要在调用下载的方法之前创建并start()
  * @attention 添加会话(session)支持,在一些需要保持会话状态下载文件的情况下,通过HttpUtil获取的sessionID进行sessionID的初始化
  * @attention 添加查看进度支持,需要调用 getCompleteRate 方法
@@ -29,8 +30,9 @@ public class DownUtil {
 	private String sessionID = "";
 	private long fileTotalLength = 0;
 	private long fileReceiveLength = 0;
-	private boolean ableToCaculate = false;
-	private boolean downloadComplete = false;
+	private boolean ableToCaculate = false;//判断器, 用来判断是否能够获取服务器响应的文件长度, 初始化为不能即false
+	private boolean downloadComplete = false;//判断器, 用来判断下载是否已经成功完成, 初始化为没有完成即false
+	private boolean ifDownloadFailed = false;//判断器, 用来判断下载是否失败, 初始化为不失败即false
 	
 	/**
 	 * constructor
@@ -82,6 +84,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		byte[] data = new byte[0];
 		try{
 			String trueRequestURL = actionURL;
@@ -114,10 +117,12 @@ public class DownUtil {
 	        	this.downloadComplete = true;
 	        }catch(IOException e){
 	        	e.printStackTrace();
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 		}catch(IOException e){
 			e.printStackTrace();
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return data;
@@ -138,6 +143,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		byte[] data = new byte[0];
 		try{
 			String trueRequestURL = actionURL;
@@ -176,10 +182,12 @@ public class DownUtil {
 	        	this.downloadComplete = true;
 	        }catch(IOException e){
 	        	e.printStackTrace();
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 		}catch(IOException e){
 			e.printStackTrace();
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return data;
@@ -201,6 +209,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			String trueRequestURL = actionURL;
@@ -239,11 +248,13 @@ public class DownUtil {
 	        }catch(IOException e){
 	        	e.printStackTrace();
 	        	flag = false;
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -266,6 +277,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			String trueRequestURL = actionURL;
@@ -310,11 +322,13 @@ public class DownUtil {
 	        }catch(IOException e){
 	        	e.printStackTrace();
 	        	flag = false;
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -337,6 +351,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			String trueRequestURL = actionURL;
@@ -382,12 +397,14 @@ public class DownUtil {
 		        }catch(IOException e){
 		        	e.printStackTrace();
 		        	flag = false;
+		        	this.ifDownloadFailed = true;
 		        	System.out.println("No response get!!!");
 		        }
 			}
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -411,6 +428,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			String trueRequestURL = actionURL;
@@ -462,12 +480,14 @@ public class DownUtil {
 		        }catch(IOException e){
 		        	e.printStackTrace();
 		        	flag = false;
+		        	this.ifDownloadFailed = true;
 		        	System.out.println("No response get!!!");
 		        }
 			}
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -488,6 +508,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		byte[] data = new byte[0];
 		try{
 			URL url = new URL(actionURL);
@@ -537,11 +558,13 @@ public class DownUtil {
 	        	this.downloadComplete = true;
 	        }catch(IOException e){
 	        	e.printStackTrace();
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 	        ds.close();
 		}catch(IOException e){
 			e.printStackTrace();
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return data;
@@ -565,6 +588,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			URL url = new URL(actionURL);
@@ -619,12 +643,14 @@ public class DownUtil {
 	        }catch(IOException e){
 	        	e.printStackTrace();
 	        	flag = false;
+	        	this.ifDownloadFailed = true;
 	        	System.out.println("No response get!!!");
 	        }
 	        ds.close();
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -648,6 +674,7 @@ public class DownUtil {
 		this.fileReceiveLength = 0L;
 		this.ableToCaculate = false;
 		this.downloadComplete = false;
+		this.ifDownloadFailed = false;
 		boolean flag = false;
 		try{
 			URL url = new URL(actionURL);
@@ -709,6 +736,7 @@ public class DownUtil {
 		        }catch(IOException e){
 		        	e.printStackTrace();
 		        	flag = false;
+		        	this.ifDownloadFailed = true;
 		        	System.out.println("No response get!!!");
 		        }
 		        ds.close();
@@ -716,6 +744,7 @@ public class DownUtil {
 		}catch(IOException e){
 			e.printStackTrace();
 			flag = false;
+        	this.ifDownloadFailed = true;
 			System.out.println("Request failed!");
 		}
 		return flag;
@@ -738,22 +767,43 @@ public class DownUtil {
 
 	/**
 	 * @author johnson
+	 * @method initializeStates
+	 * @description 用来初始化一些控制判断变量的方法,比如 ableToCaculate， downloadComplete等变量
+	 * @attention 该方法在 getCompleteRate 方法之前调用，用来初始化getCompleteRate需要用到的变量值
+	 * @attention 使getCompleteRate方法能够正常的发挥作用, 特别是开启一个线程调用getCompleteRate方法时,
+	 * @attention 需要在线程体之外调用本方法
+	 * */
+	public void initializeStates(){
+		this.ableToCaculate = false;//判断器, 用来判断是否能够获取服务器响应的文件长度, 初始化为不能即false
+		this.downloadComplete = false;//判断器, 用来判断下载是否已经成功完成, 初始化为没有完成即false
+		this.ifDownloadFailed = false;//判断器, 用来判断下载是否失败, 初始化为不失败即false
+	}
+	
+	/**
+	 * @author johnson
 	 * @method getCompleteRate
 	 * @description get the complete percentage of downloading
 	 * @description 下载完成度百分比(double 显示)
+	 * @attention 如果需要开启线程并在该线程内调用此方法,则应该先调用initializeStates方法将变量初始化再新建线程
+	 * @attention 开启新线程调用此方法需要在下载方法之前,因为下载方法线程IO阻塞
 	 * @attention 如果获取不到服务器响应的文件大小,则返回0.01并且下载完成之后返回1.01
-	 * @return double percentage
+	 * @attention 如果下载失败则返回-1.0表示下载失败了
+	 * @return double percentage if returns -1.0 means download failed
 	 * */
 	public double getCompleteRate(){
 		double flag = 0.0;
-		if(!this.ableToCaculate){//如果获取不到文件长度
-			if(this.downloadComplete){//如果完成下载
-				flag = 1.01;
-			}else{
-				flag = 0.01;
-			}
+		if(this.ifDownloadFailed){//如果下载失败
+			flag = -1.0D;
 		}else{
-			flag = this.fileReceiveLength * 1.0 / this.fileTotalLength;
+			if(!this.ableToCaculate){//如果获取不到文件长度
+				if(this.downloadComplete){//获取不到文件长度并且完成下载
+					flag = 1.01;
+				}else{
+					flag = 0.01;
+				}
+			}else{
+				flag = this.fileReceiveLength * 1.0 / this.fileTotalLength;
+			}
 		}
 		return flag;		
 	}
@@ -815,6 +865,11 @@ public class DownUtil {
 					Thread.sleep(this.showTime);
 				}catch(Exception e){
 					e.printStackTrace();
+				}
+				if(down.getCompleteRate() == -1.0){
+					System.out.println("Downloading.....00.00%");
+					System.out.println("Downloadind failed!");
+					break;
 				}
 				if(down.getCompleteRate() >= 1.0){
 					System.out.println("Downloading.....100.00%");
